@@ -24,3 +24,5 @@ a11y_audit-*.tar
 
 # Temporary files, for example, from tests.
 /tmp/
+
+/assets/node_modules/
