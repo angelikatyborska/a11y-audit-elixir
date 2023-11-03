@@ -1,6 +1,6 @@
-defmodule A11yAudit.Results.Result do
+defmodule A11yAudit.Results.Violation do
   @moduledoc """
-  Corresponds to a single object in axe-core's results object's arrays: passes, violations, inapplicable, or incomplete.
+  Corresponds to a single object in axe-core's results object's violations array.
   Some fields omitted.
 
   Axe-core documentation: https://github.com/dequelabs/axe-core/blob/develop/doc/API.md#results-arrays
@@ -9,7 +9,7 @@ defmodule A11yAudit.Results.Result do
   @enforce_keys [:id, :description, :help, :help_url, :impact, :nodes]
   defstruct [:id, :description, :help, :help_url, :impact, :nodes]
 
-  @type impact :: :minor | :moderate | :serious | :critical | nil
+  @type impact :: :minor | :moderate | :serious | :critical
   @type t :: %{
           id: String.t(),
           description: String.t(),

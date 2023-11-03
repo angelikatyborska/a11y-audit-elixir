@@ -28,7 +28,7 @@ defmodule A11yAudit.Results do
       url: url,
       violations:
         Enum.map(violations, fn violation ->
-          A11yAudit.Results.Result.from_json(violation)
+          A11yAudit.Results.Violation.from_json(violation)
         end)
     }
   end

@@ -4,7 +4,7 @@ defmodule A11yAudit.Fixtures.AxeCoreResultsVox do
       test_engine: %{"name" => "axe-core", "version" => "4.8.2"},
       url: "https://www.vox.com/",
       violations: [
-        %A11yAudit.Results.Result{
+        %A11yAudit.Results.Violation{
           description:
             "Ensures the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
           help: "Elements must meet minimum color contrast ratio thresholds",
@@ -120,7 +120,7 @@ defmodule A11yAudit.Fixtures.AxeCoreResultsVox do
             }
           ]
         },
-        %A11yAudit.Results.Result{
+        %A11yAudit.Results.Violation{
           description: "Ensures <iframe> and <frame> elements have an accessible name",
           help: "Frames must have an accessible name",
           help_url: "https://dequeuniversity.com/rules/axe/4.8/frame-title?application=axeAPI",
@@ -141,7 +141,7 @@ defmodule A11yAudit.Fixtures.AxeCoreResultsVox do
             }
           ]
         },
-        %A11yAudit.Results.Result{
+        %A11yAudit.Results.Violation{
           description:
             "Ensures <img> elements have alternate text or a role of none or presentation",
           help: "Images must have alternate text",
@@ -156,7 +156,7 @@ defmodule A11yAudit.Fixtures.AxeCoreResultsVox do
             }
           ]
         },
-        %A11yAudit.Results.Result{
+        %A11yAudit.Results.Violation{
           description:
             "Landmarks should have a unique role or role/label/title (i.e. accessible name) combination",
           help: "Ensures landmarks are unique",
@@ -173,7 +173,7 @@ defmodule A11yAudit.Fixtures.AxeCoreResultsVox do
             }
           ]
         },
-        %A11yAudit.Results.Result{
+        %A11yAudit.Results.Violation{
           description:
             "Ensure links are distinguished from surrounding text in a way that does not rely on color",
           help: "Links must be distinguishable without relying on color",
@@ -239,7 +239,7 @@ defmodule A11yAudit.Fixtures.AxeCoreResultsVox do
             }
           ]
         },
-        %A11yAudit.Results.Result{
+        %A11yAudit.Results.Violation{
           description: "Ensures links have discernible text",
           help: "Links must have discernible text",
           help_url: "https://dequeuniversity.com/rules/axe/4.8/link-name?application=axeAPI",
@@ -254,7 +254,7 @@ defmodule A11yAudit.Fixtures.AxeCoreResultsVox do
             }
           ]
         },
-        %A11yAudit.Results.Result{
+        %A11yAudit.Results.Violation{
           description:
             "Ensure that the page, or at least one of its frames contains a level-one heading",
           help: "Page should contain a level-one heading",
@@ -269,7 +269,7 @@ defmodule A11yAudit.Fixtures.AxeCoreResultsVox do
             }
           ]
         },
-        %A11yAudit.Results.Result{
+        %A11yAudit.Results.Violation{
           description: "Ensures all page content is contained by landmarks",
           help: "All page content should be contained by landmarks",
           help_url: "https://dequeuniversity.com/rules/axe/4.8/region?application=axeAPI",
@@ -296,7 +296,7 @@ defmodule A11yAudit.Fixtures.AxeCoreResultsVox do
             }
           ]
         },
-        %A11yAudit.Results.Result{
+        %A11yAudit.Results.Violation{
           description:
             "Ensures <svg> elements with an img, graphics-document or graphics-symbol role have an accessible text",
           help: "<svg> elements with an img role must have an alternative text",

@@ -4,8 +4,8 @@ defmodule A11yAudit.Formatter do
   import IO.ANSI, only: [magenta: 0, yellow: 0, red: 0, white: 0, reset: 0, reverse: 0]
 
   @doc false
-  def format_result(result) do
-    %A11yAudit.Results.Result{
+  def format_violation(result) do
+    %A11yAudit.Results.Violation{
       id: _id,
       description: _description,
       help: help,
@@ -135,9 +135,6 @@ defmodule A11yAudit.Formatter do
         yellow()
 
       :minor ->
-        white()
-
-      nil ->
         white()
     end
   end

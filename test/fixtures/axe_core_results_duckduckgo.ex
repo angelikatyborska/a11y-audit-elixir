@@ -4,7 +4,7 @@ defmodule A11yAudit.Fixtures.AxeCoreResultsDuckDuckGo do
       test_engine: %{"name" => "axe-core", "version" => "4.8.2"},
       url: "https://duckduckgo.com/",
       violations: [
-        %A11yAudit.Results.Result{
+        %A11yAudit.Results.Violation{
           description: "Ensures all ARIA attributes have valid values",
           help: "ARIA attributes must conform to valid values",
           help_url:
@@ -20,7 +20,7 @@ defmodule A11yAudit.Fixtures.AxeCoreResultsDuckDuckGo do
             }
           ]
         },
-        %A11yAudit.Results.Result{
+        %A11yAudit.Results.Violation{
           description: "Ensures buttons have discernible text",
           help: "Buttons must have discernible text",
           help_url: "https://dequeuniversity.com/rules/axe/4.8/button-name?application=axeAPI",
@@ -35,7 +35,7 @@ defmodule A11yAudit.Fixtures.AxeCoreResultsDuckDuckGo do
             }
           ]
         },
-        %A11yAudit.Results.Result{
+        %A11yAudit.Results.Violation{
           description:
             "Ensures the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
           help: "Elements must meet minimum color contrast ratio thresholds",
@@ -84,7 +84,7 @@ defmodule A11yAudit.Fixtures.AxeCoreResultsDuckDuckGo do
             }
           ]
         },
-        %A11yAudit.Results.Result{
+        %A11yAudit.Results.Violation{
           description:
             "Ensure that the page, or at least one of its frames contains a level-one heading",
           help: "Page should contain a level-one heading",
