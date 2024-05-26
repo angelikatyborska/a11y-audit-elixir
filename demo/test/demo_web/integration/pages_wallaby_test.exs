@@ -1,4 +1,4 @@
-defmodule DemoWeb.HomeWallabyTest do
+defmodule DemoWeb.PagesWallabyTest do
   use ExUnit.Case, async: true
   use Wallaby.Feature
 

@@ -44,7 +44,8 @@ defmodule Demo.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.2"},
-      {:wallaby, "~> 0.30", runtime: false, only: :test}
+      {:wallaby, "~> 0.30", runtime: false, only: :test},
+      {:hound, "~> 1.1", runtime: false, only: :test}
     ]
   end
 
