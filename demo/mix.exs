@@ -43,7 +43,8 @@ defmodule Demo.MixProject do
       {:telemetry_poller, "~> 1.0"},
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
-      {:bandit, "~> 1.2"}
+      {:bandit, "~> 1.2"},
+      {:wallaby, "~> 0.30", runtime: false, only: :test}
     ]
   end
 
@@ -61,6 +62,10 @@ defmodule Demo.MixProject do
       "assets.deploy": [
         "esbuild demo --minify",
         "phx.digest"
+      ],
+      test: [
+        "assets.build",
+        "test"
       ]
     ]
   end

@@ -1,9 +1,15 @@
 defmodule DemoWeb.PageController do
   use DemoWeb, :controller
 
-  def home(conn, _params) do
-    # The home page is often custom made,
-    # so skip the default app layout.
-    render(conn, :home, layout: false)
+  def valid(conn, _params) do
+    render(conn, :valid)
+  end
+
+  def invalid(conn, _params) do
+    render(conn, :invalid)
+  end
+
+  def dynamic_invalid(conn, _params) do
+    render(conn, :dynamic_invalid)
   end
 end

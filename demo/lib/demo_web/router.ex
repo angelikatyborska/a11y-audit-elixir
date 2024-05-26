@@ -17,7 +17,9 @@ defmodule DemoWeb.Router do
   scope "/", DemoWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    get "/valid", PageController, :valid
+    get "/invalid", PageController, :invalid
+    get "/dynamic_invalid", PageController, :dynamic_invalid
   end
 
   # Other scopes may use custom stacks.
