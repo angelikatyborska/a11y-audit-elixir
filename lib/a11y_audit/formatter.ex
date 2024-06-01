@@ -3,36 +3,83 @@ defmodule A11yAudit.Formatter do
 
   import IO.ANSI, only: [magenta: 0, yellow: 0, red: 0, white: 0, reset: 0, reverse: 0]
 
+  alias A11yAudit.Results
+  alias A11yAudit.Results.Violation
+
   @doc false
-  def format_violation(result) do
-    %A11yAudit.Results.Violation{
+  @spec format_results(%Results{}) :: binary
+  def format_results(results) do
+    # TODO: make customizable
+    max_violations_per_result = 5
+    total_violations = Enum.count(results.violations)
+
+    formatted_results =
+      results.violations
+      |> Enum.sort_by(&violation_impact_sort/1)
+      |> Enum.take(max_violations_per_result)
+      |> Enum.map(&format_violation/1)
+      |> Enum.join("")
+
+    if max_violations_per_result >= total_violations do
+      formatted_results
+    else
+      truncated_violations = total_violations - max_violations_per_result
+      noun = if truncated_violations === 1, do: "violation", else: "violations"
+      formatted_results <> "... and #{truncated_violations} more #{noun}.\n"
+    end
+  end
+
+  @impact_map %{
+    critical: 1,
+    serious: 2,
+    moderate: 3,
+    minor: 4
+  }
+  defp violation_impact_sort(violation) do
+    @impact_map[violation.impact]
+  end
+
+  @doc false
+  @spec format_violation(%Violation{}) :: binary
+  def format_violation(violation) do
+    %Violation{
       id: _id,
       description: _description,
       help: help,
       help_url: help_url,
       impact: impact,
       nodes: nodes
-    } = result
+    } = violation
 
     color = impact_color(impact)
 
     header = "#{with_color("#{reverse()} #{impact} ", color)} #{help}"
-    left_padding = "  "
+    left_padding = "#{with_color("┃", color)} "
 
-    nodes_with_padding = format_nodes(nodes) |> Enum.map(fn line -> left_padding <> line end)
+    nodes_with_padding =
+      format_nodes(nodes) |> Enum.map(fn line -> left_pad_line(line, left_padding) end)
 
     """
     #{header}
     #{left_padding}Learn more: #{help_url}
-    #{left_padding}
-    #{nodes_with_padding}
+    #{left_pad_line("", left_padding)}
+    #{Enum.join(nodes_with_padding, "")}
     """
+  end
+
+  defp left_pad_line(line, left_padding) do
+    line =
+      (left_padding <> line)
+      |> String.trim_trailing(" ")
+
+    Regex.replace(~r/\s?\n$/, line, "\n")
   end
 
   @doc false
   def format_nodes(nodes) do
     # TODO: make customizable
     max_nodes_per_result = 5
+    # TODO: make customizable
     max_node_html_length = 100
 
     total_nodes = Enum.count(nodes)
@@ -44,8 +91,10 @@ defmodule A11yAudit.Formatter do
       |> Enum.flat_map(fn {node, index} ->
         index_string = "#{index + 1}. "
 
+        html = trim_string(String.replace(node.html, "\n", "\\n"), max_node_html_length)
+
         [
-          "#{index_string}#{trim_string(node.html, max_node_html_length)}\n"
+          "#{index_string}#{html}\n"
         ] ++
           if node.failure_summary do
             String.split(
@@ -70,18 +119,21 @@ defmodule A11yAudit.Formatter do
       if max_nodes_per_result >= total_nodes do
         formatted_nodes
       else
-        formatted_nodes ++ ["... and #{total_nodes - max_nodes_per_result} more nodes.\n"]
+        truncated_nodes = total_nodes - max_nodes_per_result
+        noun = if truncated_nodes == 1, do: "node", else: "nodes"
+        formatted_nodes ++ ["... and #{truncated_nodes} more #{noun}.\n"]
       end
 
     summary_string =
       if total_nodes == 1 do
-        "There is one node"
+        "There is 1 node"
       else
         "There are #{total_nodes} nodes"
       end
 
     [
-      "#{summary_string} with this violation:\n\n"
+      "#{summary_string} with this violation:\n",
+      "\n"
     ] ++ formatted_nodes
   end
 
