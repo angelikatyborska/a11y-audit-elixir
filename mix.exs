@@ -25,7 +25,11 @@ defmodule A11yAudit.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:jason, "~> 1.4", only: [:test]}
+      # json is used in tests by this library, it's also part of the optional dependencies
+      # which prevents me from using `only: [:test]`
+      # {:jason, "~> 1.4", only: [:test]},
+      {:wallaby, "~> 0.30", optional: true},
+      {:hound, "~> 1.1", optional: true}
     ]
   end
 end

@@ -15,6 +15,8 @@ defmodule DemoWeb.PagesHoundTest do
 
     list_items = find_all_elements(:css, "li")
     assert Enum.count(list_items) == 9
+
+    A11yAudit.Hound.assert_no_violations()
   end
 
   test "invalid page with no accessibility errors" do
@@ -25,6 +27,8 @@ defmodule DemoWeb.PagesHoundTest do
 
     list_items = find_all_elements(:css, "li")
     assert Enum.count(list_items) == 9
+
+    A11yAudit.Hound.assert_no_violations()
   end
 
   test "dynamic invalid page with accessibility errors that only happen after interaction" do
@@ -41,5 +45,7 @@ defmodule DemoWeb.PagesHoundTest do
 
     article = find_element(:css, "article")
     assert attribute_value(article, "style") == "background-color: rgb(34, 34, 34);"
+
+    A11yAudit.Hound.assert_no_violations()
   end
 end
