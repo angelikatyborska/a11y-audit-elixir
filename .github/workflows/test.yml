@@ -1,0 +1,106 @@
+name: test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-20.04
+    continue-on-error: false
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - elixir: '1.13.2'
+            otp: '24.1'
+            current_version: false
+          - elixir: '1.14.0'
+            otp: '25.0'
+            current_version: false
+          - elixir: '1.15.0'
+            otp: '26.0'
+            current_version: true
+          - elixir: '1.16.0'
+            otp: '26.2'
+            current_version: true
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+
+      - name: Use Elixir
+        uses: erlef/setup-beam@a34c98fd51e370b4d4981854aba1eb817ce4e483
+        with:
+          otp-version: ${{matrix.otp}}
+          elixir-version: ${{matrix.elixir}}
+
+      - name: Set cache key
+        id: set_cache_key
+        run: |
+          erl -eval '{ok, Version} = file:read_file(filename:join([code:root_dir(), "releases", erlang:system_info(otp_release), "OTP_VERSION"])), io:fwrite(Version), halt().' -noshell > ERLANG_VERSION
+          cat ERLANG_VERSION
+          elixir --version | tail -n 1 > ELIXIR_VERSION
+          cat ELIXIR_VERSION
+          cache_key="os-${{ runner.os }}-erlang-$( sha256sum ERLANG_VERSION | cut -d ' ' -f 1 )-elixir-$( sha256sum ELIXIR_VERSION | cut -d ' ' -f 1 )-mix-lock-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}"
+          echo "::set-output name=cache_key::$cache_key"
+
+      - name: Retrieve Mix Dependencies Cache
+        uses: actions/cache@e12d46a63a90f2fae62d114769bbf2a179198b5c
+        id: mix-cache # id to use in retrieve action
+        with:
+          path: deps
+          key: mix-${{ steps.set_cache_key.outputs.cache_key }}-v1
+
+      - name: Install Mix Dependencies
+        if: steps.mix-cache.outputs.cache-hit != 'true'
+        run: mix deps.get
+
+      - name: Build Project
+        run: mix
+
+      - name: Retrieve PLT Cache
+        uses: actions/cache@e12d46a63a90f2fae62d114769bbf2a179198b5c
+        id: plt-cache
+        with:
+          path: priv/plts
+          key: plts-${{ steps.set_cache_key.outputs.cache_key }}-v1
+
+      - name: Create PLTs
+        if: steps.plt-cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p priv/plts
+          mix dialyzer --plt
+
+      - name: Run tests
+        run: mix test
+
+#      - name: Run smoke tests
+#        run: elixir ./bin/smoke_test.exs
+
+      - name: Check for compilation warnings
+        run: mix compile --force --no-warnings
+
+      - name: Run Dialyzer
+        run: mix dialyzer
+        if: ${{ matrix.current_version }}
+
+      - name: Run format check
+        run: mix format --check-formatted
+        if: ${{ matrix.current_version }}
+
+  all_tests_passing:
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    name: All tests passing on all versions
+    needs: [test]
+    steps:
+      - run: exit 1
+        # see https://stackoverflow.com/a/67532120/4907315
+        if: >-
+          ${{
+               contains(needs.*.result, 'failure')
+            || contains(needs.*.result, 'cancelled')
+          }}
