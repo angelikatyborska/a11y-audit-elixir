@@ -59,12 +59,22 @@ defmodule A11yAudit.Formatter do
     nodes_with_padding =
       format_nodes(nodes) |> Enum.map(fn line -> left_pad_line(line, left_padding) end)
 
-    """
-    #{header}
-    #{left_padding}Learn more: #{help_url}
-    #{left_pad_line("", left_padding)}
-    #{Enum.join(nodes_with_padding, "")}
-    """
+    node_count = Enum.count(nodes)
+
+    if node_count > 0 do
+      """
+      #{header}
+      #{left_padding}Learn more: #{help_url}
+      #{left_pad_line("", left_padding)}
+      #{Enum.join(nodes_with_padding, "")}
+      """
+    else
+      """
+      #{header}
+      #{left_padding}Learn more: #{help_url}
+
+      """
+    end
   end
 
   defp left_pad_line(line, left_padding) do

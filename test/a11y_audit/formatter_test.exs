@@ -175,7 +175,7 @@ defmodule A11yAudit.FormatterTest do
           violation(2, :serious),
           violation(3, :minor),
           violation(4, :critical),
-          violation(5, :serious),
+          violation(5, :serious)
         ]
       }
 
@@ -245,6 +245,17 @@ defmodule A11yAudit.FormatterTest do
                \e[33m┃\e[0m There is 1 node with this violation:
                \e[33m┃\e[0m
                \e[33m┃\e[0m 1. <ul><div>x</div></ul>
+
+               """
+    end
+
+    test "prints 0 nodes" do
+      nodes = []
+
+      assert Formatter.format_violation(violation_with_nodes(nodes)) ===
+               """
+               \e[33m\e[7m moderate \e[0m help
+               \e[33m┃\e[0m Learn more: help_url
 
                """
     end
