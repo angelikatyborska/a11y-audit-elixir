@@ -9,14 +9,14 @@ defmodule A11yAudit.Results do
   @enforce_keys [:test_engine, :url, :violations]
   defstruct [:test_engine, :url, :violations]
 
-  @type t :: %{
+  @type t :: %__MODULE__{
           test_engine: String.t(),
           url: String.t(),
-          violations: list(A11yAudit.Results.Result.t())
+          violations: list(A11yAudit.Results.Violation.t())
         }
 
   @spec from_json(map) :: t
-  def from_json(map) do
+  def from_json(%{} = map) do
     %{
       "testEngine" => test_engine,
       "url" => url,

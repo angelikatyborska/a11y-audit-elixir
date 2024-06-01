@@ -10,17 +10,17 @@ defmodule A11yAudit.Results.Violation do
   defstruct [:id, :description, :help, :help_url, :impact, :nodes]
 
   @type impact :: :minor | :moderate | :serious | :critical
-  @type t :: %{
+  @type t :: %__MODULE__{
           id: String.t(),
           description: String.t(),
           help: String.t(),
           help_url: String.t(),
           impact: impact,
-          nodes: list(A11yAudit.Result.Node.t())
+          nodes: list(A11yAudit.Results.Node.t())
         }
 
   @spec from_json(map) :: t
-  def from_json(map) do
+  def from_json(%{} = map) do
     %{
       "id" => id,
       "description" => description,
@@ -49,7 +49,6 @@ defmodule A11yAudit.Results.Violation do
       "moderate" -> :moderate
       "serious" -> :serious
       "critical" -> :critical
-      nil -> nil
     end
   end
 end

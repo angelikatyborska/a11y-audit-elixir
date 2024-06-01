@@ -8,7 +8,8 @@ defmodule A11yAudit.MixProject do
       elixir: "~> 1.15",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      dialyzer: [plt_add_apps: [:ex_unit]]
     ]
   end
 
@@ -29,7 +30,8 @@ defmodule A11yAudit.MixProject do
       # which prevents me from using `only: [:test]`
       # {:jason, "~> 1.4", only: [:test]},
       {:wallaby, "~> 0.30", optional: true},
-      {:hound, "~> 1.1", optional: true}
+      {:hound, "~> 1.1", optional: true},
+      {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false}
     ]
   end
 end
