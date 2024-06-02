@@ -9,14 +9,14 @@ defmodule A11yAudit.Results.Node do
   @enforce_keys [:html]
   defstruct [:html, :failure_summary]
 
-  @type t :: %{
+  @type t :: %__MODULE__{
           html: String.t(),
           failure_summary: String.t()
         }
 
   @doc false
   @spec from_json(map) :: t
-  def from_json(map) do
+  def from_json(%{} = map) do
     %{"html" => html, "failureSummary" => failure_summary} = map
     %__MODULE__{html: html, failure_summary: failure_summary}
   end
