@@ -1,10 +1,15 @@
 defmodule A11yAudit.FormatterTest do
   use ExUnit.Case
 
+  alias A11yAudit.Assertions
   alias A11yAudit.Formatter
   alias A11yAudit.Results
   alias A11yAudit.Results.Violation
   alias A11yAudit.Results.Node
+
+  def opts(overrides \\ []) do
+    Keyword.merge(Assertions.default_opts(), overrides)
+  end
 
   describe "format_results" do
     defp violation(id \\ "1", impact \\ :critical) do
@@ -21,7 +26,7 @@ defmodule A11yAudit.FormatterTest do
     test "prints 1 violation" do
       results = %Results{test_engine: "1", url: "/", violations: [violation()]}
 
-      assert Formatter.format_results(results) ===
+      assert Formatter.format_results(results, opts()) ===
                """
                \e[35m\e[7m critical \e[0m help 1
                \e[35m┃\e[0m Learn more: help_url 1
@@ -36,7 +41,7 @@ defmodule A11yAudit.FormatterTest do
     test "prints 2 violations" do
       results = %Results{test_engine: "1", url: "/", violations: [violation(1), violation(2)]}
 
-      assert Formatter.format_results(results) ===
+      assert Formatter.format_results(results, opts()) ===
                """
                \e[35m\e[7m critical \e[0m help 1
                \e[35m┃\e[0m Learn more: help_url 1
@@ -55,7 +60,7 @@ defmodule A11yAudit.FormatterTest do
                """
     end
 
-    test "prints 6 violations" do
+    test "prints 6 violations with print limit" do
       results = %Results{
         test_engine: "1",
         url: "/",
@@ -69,7 +74,7 @@ defmodule A11yAudit.FormatterTest do
         ]
       }
 
-      assert Formatter.format_results(results) ===
+      assert Formatter.format_results(results, opts(violations_print_limit: 5)) ===
                """
                \e[35m\e[7m critical \e[0m help 1
                \e[35m┃\e[0m Learn more: help_url 1
@@ -110,7 +115,7 @@ defmodule A11yAudit.FormatterTest do
                """
     end
 
-    test "prints 7 violations" do
+    test "prints 7 violations with print limit" do
       results = %Results{
         test_engine: "1",
         url: "/",
@@ -120,12 +125,12 @@ defmodule A11yAudit.FormatterTest do
           violation(3),
           violation(4),
           violation(5),
-          violation(7),
-          violation(6)
+          violation(6),
+          violation(7)
         ]
       }
 
-      assert Formatter.format_results(results) ===
+      assert Formatter.format_results(results, opts(violations_print_limit: 5)) ===
                """
                \e[35m\e[7m critical \e[0m help 1
                \e[35m┃\e[0m Learn more: help_url 1
@@ -166,7 +171,76 @@ defmodule A11yAudit.FormatterTest do
                """
     end
 
-    test "orders violations per impact" do
+    test "prints 7 violations without print limit" do
+      results = %Results{
+        test_engine: "1",
+        url: "/",
+        violations: [
+          violation(1),
+          violation(2),
+          violation(3),
+          violation(4),
+          violation(5),
+          violation(6),
+          violation(7)
+        ]
+      }
+
+      assert Formatter.format_results(results, opts(violations_print_limit: :infinity)) ===
+               """
+               \e[35m\e[7m critical \e[0m help 1
+               \e[35m┃\e[0m Learn more: help_url 1
+               \e[35m┃\e[0m
+               \e[35m┃\e[0m There is 1 node with this violation:
+               \e[35m┃\e[0m
+               \e[35m┃\e[0m 1. <div>x</div>
+
+               \e[35m\e[7m critical \e[0m help 2
+               \e[35m┃\e[0m Learn more: help_url 2
+               \e[35m┃\e[0m
+               \e[35m┃\e[0m There is 1 node with this violation:
+               \e[35m┃\e[0m
+               \e[35m┃\e[0m 1. <div>x</div>
+
+               \e[35m\e[7m critical \e[0m help 3
+               \e[35m┃\e[0m Learn more: help_url 3
+               \e[35m┃\e[0m
+               \e[35m┃\e[0m There is 1 node with this violation:
+               \e[35m┃\e[0m
+               \e[35m┃\e[0m 1. <div>x</div>
+
+               \e[35m\e[7m critical \e[0m help 4
+               \e[35m┃\e[0m Learn more: help_url 4
+               \e[35m┃\e[0m
+               \e[35m┃\e[0m There is 1 node with this violation:
+               \e[35m┃\e[0m
+               \e[35m┃\e[0m 1. <div>x</div>
+
+               \e[35m\e[7m critical \e[0m help 5
+               \e[35m┃\e[0m Learn more: help_url 5
+               \e[35m┃\e[0m
+               \e[35m┃\e[0m There is 1 node with this violation:
+               \e[35m┃\e[0m
+               \e[35m┃\e[0m 1. <div>x</div>
+
+               \e[35m\e[7m critical \e[0m help 6
+               \e[35m┃\e[0m Learn more: help_url 6
+               \e[35m┃\e[0m
+               \e[35m┃\e[0m There is 1 node with this violation:
+               \e[35m┃\e[0m
+               \e[35m┃\e[0m 1. <div>x</div>
+
+               \e[35m\e[7m critical \e[0m help 7
+               \e[35m┃\e[0m Learn more: help_url 7
+               \e[35m┃\e[0m
+               \e[35m┃\e[0m There is 1 node with this violation:
+               \e[35m┃\e[0m
+               \e[35m┃\e[0m 1. <div>x</div>
+
+               """
+    end
+
+    test "orders violations per impact before print limit" do
       results = %Results{
         test_engine: "1",
         url: "/",
@@ -175,11 +249,13 @@ defmodule A11yAudit.FormatterTest do
           violation(2, :serious),
           violation(3, :minor),
           violation(4, :critical),
-          violation(5, :serious)
+          violation(5, :minor),
+          violation(6, :serious),
+          violation(7, :minor)
         ]
       }
 
-      assert Formatter.format_results(results) ===
+      assert Formatter.format_results(results, opts(violations_print_limit: 5)) ===
                """
                \e[35m\e[7m critical \e[0m help 4
                \e[35m┃\e[0m Learn more: help_url 4
@@ -195,8 +271,8 @@ defmodule A11yAudit.FormatterTest do
                \e[31m┃\e[0m
                \e[31m┃\e[0m 1. <div>x</div>
 
-               \e[31m\e[7m serious \e[0m help 5
-               \e[31m┃\e[0m Learn more: help_url 5
+               \e[31m\e[7m serious \e[0m help 6
+               \e[31m┃\e[0m Learn more: help_url 6
                \e[31m┃\e[0m
                \e[31m┃\e[0m There is 1 node with this violation:
                \e[31m┃\e[0m
@@ -216,6 +292,7 @@ defmodule A11yAudit.FormatterTest do
                \e[37m┃\e[0m
                \e[37m┃\e[0m 1. <div>x</div>
 
+               ... and 2 more violations.
                """
     end
   end
@@ -237,7 +314,7 @@ defmodule A11yAudit.FormatterTest do
         %Node{html: "<ul><div>x</div></ul>"}
       ]
 
-      assert Formatter.format_violation(violation_with_nodes(nodes)) ===
+      assert Formatter.format_violation(violation_with_nodes(nodes), opts()) ===
                """
                \e[33m\e[7m moderate \e[0m help
                \e[33m┃\e[0m Learn more: help_url
@@ -252,7 +329,7 @@ defmodule A11yAudit.FormatterTest do
     test "prints 0 nodes" do
       nodes = []
 
-      assert Formatter.format_violation(violation_with_nodes(nodes)) ===
+      assert Formatter.format_violation(violation_with_nodes(nodes), opts()) ===
                """
                \e[33m\e[7m moderate \e[0m help
                \e[33m┃\e[0m Learn more: help_url
@@ -266,7 +343,7 @@ defmodule A11yAudit.FormatterTest do
         %Node{html: "<ul><div>x</div></ul>"}
       ]
 
-      assert Formatter.format_violation(violation_with_nodes(nodes)) ===
+      assert Formatter.format_violation(violation_with_nodes(nodes), opts()) ===
                """
                \e[33m\e[7m moderate \e[0m help
                \e[33m┃\e[0m Learn more: help_url
@@ -279,7 +356,7 @@ defmodule A11yAudit.FormatterTest do
                """
     end
 
-    test "prints 6 nodes" do
+    test "prints 6 nodes with print limit" do
       nodes = [
         %Node{html: "<div>1</div>"},
         %Node{html: "<div>2</div>"},
@@ -289,7 +366,10 @@ defmodule A11yAudit.FormatterTest do
         %Node{html: "<div>6</div>"}
       ]
 
-      assert Formatter.format_violation(violation_with_nodes(nodes)) ===
+      assert Formatter.format_violation(
+               violation_with_nodes(nodes),
+               opts(violations_print_limit: 5)
+             ) ===
                """
                \e[33m\e[7m moderate \e[0m help
                \e[33m┃\e[0m Learn more: help_url
@@ -306,7 +386,7 @@ defmodule A11yAudit.FormatterTest do
                """
     end
 
-    test "prints 7 nodes" do
+    test "prints 7 nodes with print limit" do
       nodes = [
         %Node{html: "<div>1</div>"},
         %Node{html: "<div>2</div>"},
@@ -317,7 +397,10 @@ defmodule A11yAudit.FormatterTest do
         %Node{html: "<div>7</div>"}
       ]
 
-      assert Formatter.format_violation(violation_with_nodes(nodes)) ===
+      assert Formatter.format_violation(
+               violation_with_nodes(nodes),
+               opts(nodes_per_violation_print_limit: 5)
+             ) ===
                """
                \e[33m\e[7m moderate \e[0m help
                \e[33m┃\e[0m Learn more: help_url
@@ -333,16 +416,48 @@ defmodule A11yAudit.FormatterTest do
 
                """
     end
+
+    test "prints 7 nodes without print limit" do
+      nodes = [
+        %Node{html: "<div>1</div>"},
+        %Node{html: "<div>2</div>"},
+        %Node{html: "<div>3</div>"},
+        %Node{html: "<div>4</div>"},
+        %Node{html: "<div>5</div>"},
+        %Node{html: "<div>6</div>"},
+        %Node{html: "<div>7</div>"}
+      ]
+
+      assert Formatter.format_violation(
+               violation_with_nodes(nodes),
+               opts(nodes_per_violation_print_limit: :infinity)
+             ) ===
+               """
+               \e[33m\e[7m moderate \e[0m help
+               \e[33m┃\e[0m Learn more: help_url
+               \e[33m┃\e[0m
+               \e[33m┃\e[0m There are 7 nodes with this violation:
+               \e[33m┃\e[0m
+               \e[33m┃\e[0m 1. <div>1</div>
+               \e[33m┃\e[0m 2. <div>2</div>
+               \e[33m┃\e[0m 3. <div>3</div>
+               \e[33m┃\e[0m 4. <div>4</div>
+               \e[33m┃\e[0m 5. <div>5</div>
+               \e[33m┃\e[0m 6. <div>6</div>
+               \e[33m┃\e[0m 7. <div>7</div>
+
+               """
+    end
   end
 
   describe "format_nodes" do
-    test "prints nodes" do
+    test "prints 2 nodes" do
       nodes = [
         %Node{html: "<h1>Hello</h1>"},
         %Node{html: "<p>Lorem ipsum</p>"}
       ]
 
-      assert Formatter.format_nodes(nodes) |> Enum.join("") ===
+      assert Formatter.format_nodes(nodes, opts()) |> Enum.join("") ===
                """
                There are 2 nodes with this violation:
 
@@ -362,7 +477,7 @@ defmodule A11yAudit.FormatterTest do
         %Node{html: "<p>Lorem ipsum</p>"}
       ]
 
-      assert Formatter.format_nodes(nodes) |> Enum.join("") ===
+      assert Formatter.format_nodes(nodes, opts()) |> Enum.join("") ===
                """
                There are 7 nodes with this violation:
 
@@ -383,11 +498,28 @@ defmodule A11yAudit.FormatterTest do
         }
       ]
 
-      assert Formatter.format_nodes(nodes) |> Enum.join("") ===
+      assert Formatter.format_nodes(nodes, opts()) |> Enum.join("") ===
                """
                There is 1 node with this violation:
 
                1. <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt u...
+               """
+    end
+
+    test "accepts opt not to trim html" do
+      nodes = [
+        %Node{
+          html:
+            "<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>"
+        }
+      ]
+
+      assert Formatter.format_nodes(nodes, opts(node_html_print_limit: :infinity))
+             |> Enum.join("") ===
+               """
+               There is 1 node with this violation:
+
+               1. <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
                """
     end
 
@@ -398,7 +530,7 @@ defmodule A11yAudit.FormatterTest do
         }
       ]
 
-      assert Formatter.format_nodes(nodes) |> Enum.join("") ===
+      assert Formatter.format_nodes(nodes, opts()) |> Enum.join("") ===
                """
                There is 1 node with this violation:
 
@@ -419,7 +551,7 @@ defmodule A11yAudit.FormatterTest do
         }
       ]
 
-      assert Formatter.format_nodes(nodes) |> Enum.join("") ===
+      assert Formatter.format_nodes(nodes, opts()) |> Enum.join("") ===
                """
                There are 2 nodes with this violation:
 
@@ -448,7 +580,7 @@ defmodule A11yAudit.FormatterTest do
         }
       ]
 
-      assert Formatter.format_nodes(nodes) |> Enum.join("") ===
+      assert Formatter.format_nodes(nodes, opts()) |> Enum.join("") ===
                """
                There is 1 node with this violation:
 
@@ -474,7 +606,7 @@ defmodule A11yAudit.FormatterTest do
         }
       ]
 
-      assert Formatter.format_nodes(nodes) |> Enum.join("") ===
+      assert Formatter.format_nodes(nodes, opts()) |> Enum.join("") ===
                """
                There is 1 node with this violation:
 
@@ -492,7 +624,7 @@ defmodule A11yAudit.FormatterTest do
         }
       ]
 
-      assert Formatter.format_nodes(nodes) |> Enum.join("") ===
+      assert Formatter.format_nodes(nodes, opts()) |> Enum.join("") ===
                """
                There is 1 node with this violation:
 

@@ -7,14 +7,15 @@ defmodule A11yAudit.Wallaby do
   alias A11yAudit.Results
   alias A11yAudit.Assertions
 
-  @spec assert_no_violations(Wallaby.Browser.parent()) :: Wallaby.Browser.parent() | no_return()
-  def assert_no_violations(session) do
+  @spec assert_no_violations(Wallaby.Browser.parent(), Assertions.opts()) ::
+          Wallaby.Browser.parent() | no_return()
+  def assert_no_violations(session, opts \\ []) do
     if Code.ensure_loaded?(Wallaby) do
       session
       |> Wallaby.Browser.execute_script(JS.axe_core())
       |> Wallaby.Browser.execute_script(JS.await_audit_results(), [], fn axe_result ->
         audit_results = Results.from_json(axe_result)
-        Assertions.assert_no_violations(audit_results)
+        Assertions.assert_no_violations(audit_results, opts)
       end)
     else
       Logger.error("""

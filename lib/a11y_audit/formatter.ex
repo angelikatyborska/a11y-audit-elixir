@@ -3,29 +3,31 @@ defmodule A11yAudit.Formatter do
 
   import IO.ANSI, only: [magenta: 0, yellow: 0, red: 0, white: 0, reset: 0, reverse: 0]
 
+  alias A11yAudit.Assertions
   alias A11yAudit.Results
   alias A11yAudit.Results.Violation
+  alias A11yAudit.Formatter.PrintLimit
 
   @doc false
-  @spec format_results(Results.t()) :: String.t()
-  def format_results(results) do
-    # TODO: make customizable
-    max_violations_per_result = 5
-    total_violations = Enum.count(results.violations)
+  @spec format_results(Results.t(), Assertions.opts()) :: String.t()
+  def format_results(results, opts) do
+    violations_print_limit = Keyword.fetch!(opts, :violations_print_limit)
+
+    sorted_violations = Enum.sort_by(results.violations, &violation_impact_sort/1)
+
+    {truncated_violations, omitted_violations_count} =
+      PrintLimit.truncate_list(sorted_violations, violations_print_limit)
 
     formatted_results =
-      results.violations
-      |> Enum.sort_by(&violation_impact_sort/1)
-      |> Enum.take(max_violations_per_result)
-      |> Enum.map(&format_violation/1)
+      truncated_violations
+      |> Enum.map(&format_violation(&1, opts))
       |> Enum.join("")
 
-    if max_violations_per_result >= total_violations do
+    if omitted_violations_count == 0 do
       formatted_results
     else
-      truncated_violations = total_violations - max_violations_per_result
-      noun = if truncated_violations === 1, do: "violation", else: "violations"
-      formatted_results <> "... and #{truncated_violations} more #{noun}.\n"
+      noun = if omitted_violations_count === 1, do: "violation", else: "violations"
+      formatted_results <> "... and #{omitted_violations_count} more #{noun}.\n"
     end
   end
 
@@ -40,8 +42,8 @@ defmodule A11yAudit.Formatter do
   end
 
   @doc false
-  @spec format_violation(Violation.t()) :: String.t()
-  def format_violation(violation) do
+  @spec format_violation(Violation.t(), Assertions.opts()) :: String.t()
+  def format_violation(violation, opts) do
     %Violation{
       id: _id,
       description: _description,
@@ -57,7 +59,7 @@ defmodule A11yAudit.Formatter do
     left_padding = "#{with_color("┃", color)} "
 
     nodes_with_padding =
-      format_nodes(nodes) |> Enum.map(fn line -> left_pad_line(line, left_padding) end)
+      format_nodes(nodes, opts) |> Enum.map(fn line -> left_pad_line(line, left_padding) end)
 
     node_count = Enum.count(nodes)
 
@@ -86,22 +88,22 @@ defmodule A11yAudit.Formatter do
   end
 
   @doc false
-  def format_nodes(nodes) do
-    # TODO: make customizable
-    max_nodes_per_result = 5
-    # TODO: make customizable
-    max_node_html_length = 100
+  def format_nodes(nodes, opts) do
+    nodes_per_violation_print_limit = Keyword.fetch!(opts, :nodes_per_violation_print_limit)
+    node_html_print_limit = Keyword.fetch!(opts, :node_html_print_limit)
 
     total_nodes = Enum.count(nodes)
 
+    {truncated_nodes, omitted_nodes_count} =
+      PrintLimit.truncate_list(nodes, nodes_per_violation_print_limit)
+
     formatted_nodes =
-      nodes
-      |> Enum.take(max_nodes_per_result)
+      truncated_nodes
       |> Enum.with_index()
       |> Enum.flat_map(fn {node, index} ->
         index_string = "#{index + 1}. "
 
-        html = trim_string(String.replace(node.html, "\n", "\\n"), max_node_html_length)
+        html = trim_string(String.replace(node.html, "\n", "\\n"), node_html_print_limit)
 
         [
           "#{index_string}#{html}\n"
@@ -126,12 +128,11 @@ defmodule A11yAudit.Formatter do
       end)
 
     formatted_nodes =
-      if max_nodes_per_result >= total_nodes do
+      if omitted_nodes_count == 0 do
         formatted_nodes
       else
-        truncated_nodes = total_nodes - max_nodes_per_result
-        noun = if truncated_nodes == 1, do: "node", else: "nodes"
-        formatted_nodes ++ ["... and #{truncated_nodes} more #{noun}.\n"]
+        noun = if omitted_nodes_count == 1, do: "node", else: "nodes"
+        formatted_nodes ++ ["... and #{omitted_nodes_count} more #{noun}.\n"]
       end
 
     summary_string =
