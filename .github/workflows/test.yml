@@ -77,8 +77,17 @@ jobs:
       - name: Run tests
         run: mix test
 
-#      - name: Run smoke tests
-#        run: elixir ./bin/smoke_test.exs
+      - name: Set up Chromedriver
+        uses: nanasess/setup-chromedriver@v2
+      - run: |
+          export DISPLAY=:99
+          chromedriver &
+
+      - name: Set up demo project
+        run: cd demo && mix deps.get
+
+      - name: Run smoke tests
+        run: elixir ./bin/smoke_test.exs
 
       - name: Check for compilation warnings
         run: mix compile --force --no-warnings

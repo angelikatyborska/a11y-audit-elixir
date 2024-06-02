@@ -29,6 +29,6 @@ defmodule DemoWeb.PagesWallabyTest do
     |> find(Query.css("article"), fn article ->
       assert Element.attr(article, "style") == "background-color: rgb(34, 34, 34);"
     end)
-    |> A11yAudit.Wallaby.assert_no_violations()
+    |> A11yAudit.Wallaby.assert_no_violations(nodes_per_violation_print_limit: 3)
   end
 end

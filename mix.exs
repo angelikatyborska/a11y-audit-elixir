@@ -42,12 +42,12 @@ defmodule A11yAudit.MixProject do
   end
 
   defp description() do
-    "Elixir formatter plugin for doctests."
+    "Automated accessibility checks for Elixir web apps, based on axe-core."
   end
 
   defp package() do
     [
-      name: "doctest_formatter",
+      name: "a11y_audit",
       files: ~w(lib priv .formatter.exs mix.exs README* LICENSE* CHANGELOG*),
       licenses: ["MIT"],
       links: %{

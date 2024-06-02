@@ -46,6 +46,6 @@ defmodule DemoWeb.PagesHoundTest do
     article = find_element(:css, "article")
     assert attribute_value(article, "style") == "background-color: rgb(34, 34, 34);"
 
-    A11yAudit.Hound.assert_no_violations()
+    A11yAudit.Hound.assert_no_violations(nodes_per_violation_print_limit: 3)
   end
 end
