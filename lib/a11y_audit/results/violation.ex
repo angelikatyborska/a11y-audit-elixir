@@ -1,6 +1,6 @@
 defmodule A11yAudit.Results.Violation do
   @moduledoc """
-  Corresponds to a single object in axe-core's results object's violations array.
+  Corresponds to a single object in axe-core's violations array of the results object.
   Some fields omitted.
 
   Axe-core documentation: https://github.com/dequelabs/axe-core/blob/develop/doc/API.md#results-arrays
@@ -19,6 +19,7 @@ defmodule A11yAudit.Results.Violation do
           nodes: list(A11yAudit.Results.Node.t())
         }
 
+  @doc false
   @spec from_json(map) :: t
   def from_json(%{} = map) do
     %{

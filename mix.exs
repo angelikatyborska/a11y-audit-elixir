@@ -9,6 +9,11 @@ defmodule A11yAudit.MixProject do
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       deps: deps(),
+      name: "A11y Audit",
+      source_url: "https://github.com/angelikatyborska/a11y-audit-elixir/",
+      description: description(),
+      package: package(),
+      docs: docs(),
       dialyzer: [plt_add_apps: [:ex_unit]]
     ]
   end
@@ -31,7 +36,36 @@ defmodule A11yAudit.MixProject do
       # {:jason, "~> 1.4", only: [:test]},
       {:wallaby, "~> 0.30", optional: true},
       {:hound, "~> 1.1", optional: true},
-      {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false}
+      {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
+      {:ex_doc, "~> 0.31", only: :dev, runtime: false}
+    ]
+  end
+
+  defp description() do
+    "Elixir formatter plugin for doctests."
+  end
+
+  defp package() do
+    [
+      name: "doctest_formatter",
+      files: ~w(lib priv .formatter.exs mix.exs README* LICENSE* CHANGELOG*),
+      licenses: ["MIT"],
+      links: %{
+        "GitHub" => "https://github.com/angelikatyborska/a11y-audit-elixir",
+        "Changelog" =>
+          "https://github.com/angelikatyborska/a11y-audit-elixir/blob/main/CHANGELOG.md"
+      }
+    ]
+  end
+
+  defp docs do
+    [
+      main: "readme",
+      assets: %{"docs/assets" => "docs/assets"},
+      extras: [
+        "README.md",
+        "CHANGELOG.md"
+      ]
     ]
   end
 end

@@ -1,6 +1,10 @@
 defmodule A11yAudit.Assertions do
-  alias A11yAudit.Formatter
+  @moduledoc "ExUnit assertions"
 
+  alias A11yAudit.Formatter
+  alias A11yAudit.Results
+
+  @spec assert_no_violations(Results.t()) :: nil | no_return
   def assert_no_violations(results) do
     violations_count = Enum.count(results.violations)
 

@@ -7,7 +7,7 @@ defmodule A11yAudit.Formatter do
   alias A11yAudit.Results.Violation
 
   @doc false
-  @spec format_results(%Results{}) :: binary
+  @spec format_results(Results.t()) :: String.t()
   def format_results(results) do
     # TODO: make customizable
     max_violations_per_result = 5
@@ -40,7 +40,7 @@ defmodule A11yAudit.Formatter do
   end
 
   @doc false
-  @spec format_violation(%Violation{}) :: binary
+  @spec format_violation(Violation.t()) :: String.t()
   def format_violation(violation) do
     %Violation{
       id: _id,
