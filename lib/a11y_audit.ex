@@ -1,3 +1,3 @@
 defmodule A11yAudit do
-  # TODO: what should the root level module do?
+  @moduledoc false
 end

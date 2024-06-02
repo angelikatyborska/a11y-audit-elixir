@@ -133,5 +133,55 @@ defmodule A11yAudit.AssertionsTest do
                    """
       end
     end
+
+    defmodule MyViolationFilter do
+      @behaviour A11yAudit.ViolationFilter
+
+      def exclude_violation?(%{impact: impact}) do
+        impact in [:minor, :moderate]
+      end
+    end
+
+    test "accepts a filter" do
+      try do
+        Assertions.assert_no_violations(
+          %Results{
+            url: "url",
+            test_engine: "3",
+            violations: [
+              %Violation{
+                id: "id 1",
+                description: "description 1",
+                help: "help 1",
+                help_url: "help_url 1",
+                impact: :moderate,
+                nodes: []
+              },
+              %Violation{
+                id: "id 2",
+                description: "description 2",
+                help: "help 2",
+                help_url: "help_url 2",
+                impact: :serious,
+                nodes: []
+              }
+            ]
+          },
+          filter: MyViolationFilter
+        )
+
+        raise "this line should not be reached"
+      rescue
+        error in [ExUnit.AssertionError] ->
+          assert error.message ==
+                   """
+                   Expected page to have no accessibility violations, but got 1 violation.
+
+                   \e[31m\e[7m serious \e[0m help 2
+                   \e[31m┃\e[0m Learn more: help_url 2
+
+                   """
+      end
+    end
   end
 end
