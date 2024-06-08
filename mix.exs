@@ -9,6 +9,7 @@ defmodule A11yAudit.MixProject do
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       deps: deps(),
+      aliases: aliases(),
       name: "A11y Audit",
       source_url: "https://github.com/angelikatyborska/a11y-audit-elixir/",
       description: description(),
@@ -37,12 +38,19 @@ defmodule A11yAudit.MixProject do
       {:wallaby, "~> 0.30", optional: true},
       {:hound, "~> 1.1", optional: true},
       {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
-      {:ex_doc, "~> 0.31", only: :dev, runtime: false}
+      {:ex_doc, "~> 0.31", only: :dev, runtime: false},
+      {:credo, "~> 1.0", only: [:dev], runtime: false}
+    ]
+  end
+
+  defp aliases() do
+    [
+      lint: ["compile --force --warnings-as-errors", "format", "credo", "dialyzer"]
     ]
   end
 
   defp description() do
-    " Accessibility auditing for Elixir web applications using axe-core"
+    "Automated accessibility testing for Elixir web applications using axe-core"
   end
 
   defp package() do
