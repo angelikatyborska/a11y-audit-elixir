@@ -20,8 +20,7 @@ defmodule A11yAudit.Formatter do
 
     formatted_results =
       truncated_violations
-      |> Enum.map(&format_violation(&1, opts))
-      |> Enum.join("")
+      |> Enum.map_join("", &format_violation(&1, opts))
 
     if omitted_violations_count == 0 do
       formatted_results
@@ -163,10 +162,10 @@ defmodule A11yAudit.Formatter do
       include_captures: true,
       trim: true
     )
-    |> Enum.map(fn maybe_list_string ->
+    |> Enum.map_join("", fn maybe_list_string ->
       maybe_list_string
       |> String.split(~r/\n\n/, include_captures: true, trim: true)
-      |> Enum.map(fn string_chunk ->
+      |> Enum.map_join("", fn string_chunk ->
         if Regex.match?(~r/^Fix (any|all) of the following:\n/, string_chunk) do
           # string chunk is a list, add dashes to list elements
           String.replace(string_chunk, ~r/\n  ([^\s])/, "\n  - \\g{1}")
@@ -175,9 +174,7 @@ defmodule A11yAudit.Formatter do
           string_chunk
         end
       end)
-      |> Enum.join("")
     end)
-    |> Enum.join("")
   end
 
   @doc false

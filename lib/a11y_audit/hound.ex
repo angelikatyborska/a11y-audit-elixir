@@ -7,6 +7,11 @@ defmodule A11yAudit.Hound do
   alias A11yAudit.Results
   alias A11yAudit.Assertions
 
+  @doc """
+  Runs an audit on the current page and asserts that the audit results have no violations.
+
+  See `A11yAudit.Assertions.assert_no_violations/2` for the list of configuration options.
+  """
   @spec assert_no_violations(Assertions.opts()) :: nil | no_return
   def assert_no_violations(opts \\ []) do
     if Code.ensure_loaded?(Hound) do

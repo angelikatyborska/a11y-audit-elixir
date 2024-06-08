@@ -1,4 +1,6 @@
 defmodule A11yAudit.Fixtures.AxeCoreResultsVox do
+  @moduledoc false
+
   def expected_value do
     %A11yAudit.Results{
       test_engine: %{"name" => "axe-core", "version" => "4.8.2"},

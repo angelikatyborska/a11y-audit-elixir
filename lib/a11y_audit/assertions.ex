@@ -13,6 +13,8 @@ defmodule A11yAudit.Assertions do
           ]
 
   @doc """
+  Asserts that the given audit results have no violations.
+
   ## Options
 
   - `:filter` - A module implementing the `A11yAudit.ViolationFilter` behavior that will be used to exclude violations matching the filter from the results. Defaults to `nil` (no excluded violations).
