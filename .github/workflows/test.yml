@@ -83,8 +83,8 @@ jobs:
           export DISPLAY=:99
           chromedriver &
 
-      - name: Set up demo project
-        run: cd demo && mix deps.get
+      - name: Set up demo projects
+        run: cd demo/demo_hound && mix deps.get && cd ../demo_wallaby && mix deps.get
 
       - name: Run smoke tests
         run: elixir ./bin/smoke_test.exs
