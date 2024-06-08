@@ -13,17 +13,12 @@ check_output = fn (output, pattern) ->
   end
 end
 
-demo_project_path = "./demo"
-demo_test_files =
-  [
-    "test/demo_web/integration/pages_wallaby_test.exs",
-    "test/demo_web/integration/pages_hound_test.exs"
-  ]
+demo_project_paths = ["./demo/demo_hound", "./demo/demo_wallaby"]
 
-Enum.each(demo_test_files, fn demo_test_file ->
-  IO.puts("checking #{demo_test_file}")
+Enum.each(demo_project_paths, fn demo_project_path ->
+  IO.puts("checking #{demo_project_path}")
 
-  {output, 2} = System.cmd("mix", ["test", demo_test_file], cd: demo_project_path)
+  {output, 2} = System.cmd("mix", ["test", "test/demo_web/integration/pages_test.exs"], cd: demo_project_path)
 
   check_output.(output, ~r/3 (features|tests), 2 failures/)
   check_output.(output, "invalid page with accessibility errors")
@@ -37,7 +32,7 @@ Enum.each(demo_test_files, fn demo_test_file ->
   check_output.(output, "1. <h1>Angelika's Star Trek series ranking</h1>")
   check_output.(output, "... and 10 more nodes")
 
-  IO.puts("ok #{demo_test_file}")
+  IO.puts("ok #{demo_project_path}")
 end)
 
 IO.puts("all ok")

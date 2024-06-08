@@ -45,8 +45,7 @@ defmodule Demo.MixProject do
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.2"},
       {:wallaby, "~> 0.30", runtime: false, only: :test},
-      {:hound, "~> 1.1", runtime: false, only: :test},
-      {:a11y_audit, path: "../", only: [:test]}
+      {:a11y_audit, path: "../../", only: [:test]}
     ]
   end
 

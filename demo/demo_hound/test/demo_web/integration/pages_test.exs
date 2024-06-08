@@ -1,4 +1,4 @@
-defmodule DemoWeb.PagesHoundTest do
+defmodule DemoWeb.PagesTest do
   use ExUnit.Case
   use Hound.Helpers
 

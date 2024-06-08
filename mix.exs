@@ -42,7 +42,7 @@ defmodule A11yAudit.MixProject do
   end
 
   defp description() do
-    "Automated accessibility checks for Elixir web apps, based on axe-core."
+    " Accessibility auditing for Elixir web applications using axe-core"
   end
 
   defp package() do
