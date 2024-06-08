@@ -7,7 +7,7 @@
 
 Automated accessibility testing for Elixir web applications using [axe-core](https://github.com/dequelabs/axe-core).
 
-TODO: demo image
+![Expected page to have no accessibility violations, but got 1 violation. Form elements must have labels.](./docs/assets/cover.png)
 
 ## Installation
 
