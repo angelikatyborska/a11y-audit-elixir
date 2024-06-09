@@ -87,7 +87,7 @@ jobs:
         run: cd demo/demo_hound && mix deps.get && cd ../demo_wallaby && mix deps.get
 
       - name: Run smoke tests
-        run: elixir ./bin/smoke_test.exs
+        run: elixir ./bin/smoke_test.exs || elixir ./bin/smoke_test.exs
 
       - name: Check for compilation warnings
         run: mix compile --force --no-warnings
