@@ -46,6 +46,10 @@ jobs:
           otp-version: ${{matrix.versions.otp}}
           elixir-version: ${{matrix.versions.elixir}}
 
+      - name: Unlock Mix Dependencies
+        if: matrix.mix_lock == 'without_mix_lock'
+        run: mix deps.unlock --all
+
       - name: Set cache key
         id: set_cache_key
         run: |
@@ -63,12 +67,8 @@ jobs:
           path: deps
           key: mix-${{ steps.set_cache_key.outputs.cache_key }}-v1
 
-      - name: Unlock Mix Dependencies
-        if: matrix.mix_lock == 'without_mix_lock'
-        run: mix deps.unlock --all
-
       - name: Install Mix Dependencies
-        if: steps.mix-cache.outputs.cache-hit != 'true' || matrix.mix_lock == 'without_mix_lock'
+        if: steps.mix-cache.outputs.cache-hit != 'true'
         run: mix deps.get
 
       - name: Build Project
