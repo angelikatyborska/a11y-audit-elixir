@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "axe-core": "^4.9.1"
+    "axe-core": "^4.10.0"
   },
   "scripts": {
     "postinstall": "cp node_modules/axe-core/axe.min.js ../priv/"
