@@ -91,3 +91,9 @@ Please reference [axe-core's documentation](https://github.com/dequelabs/axe-cor
 ## Checks
 
 Please reference [axe-core's documentation](https://github.com/dequelabs/axe-core/blob/develop/doc/rule-descriptions.md) to find out which accessibility checks are run.
+
+## Caveats
+
+### CSS transitions might cause flaky tests
+
+If the accessibility audit runs while a CSS transition is in progress, it might lead to intermittent failures of the [color contrast](https://dequeuniversity.com/rules/axe/3.5/color-contrast) check. To prevent this, I recommend [turning off CSS transitions in the test environment](https://angelika.me/2024/08/12/how-to-add-css-rules-only-in-test-env-phoenix-app/#what-to-do-instead).
