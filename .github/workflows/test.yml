@@ -84,7 +84,7 @@ jobs:
         uses: nanasess/setup-chromedriver@v2
       - run: |
           export DISPLAY=:99
-          chromedriver &
+          chromedriver --port=9515 &
 
       - name: Set up demo projects
         run: cd demo/demo_hound && mix deps.get && cd ../demo_wallaby && mix deps.get
