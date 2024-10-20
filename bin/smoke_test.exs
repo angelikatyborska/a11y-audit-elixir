@@ -8,7 +8,7 @@ check_output = fn (output, pattern) ->
     IO.puts("Expected test output to match pattern:")
     IO.inspect(pattern)
     IO.puts("Full output")
-    IO.inspect(output)
+    IO.inspect(output, printable_limit: :infinity, limit: :infinity)
     exit 1
   end
 end
@@ -23,7 +23,7 @@ Enum.each(demo_project_paths, fn demo_project_path ->
   check_output.(output, ~r/3 (features|tests), 2 failures/)
   check_output.(output, "invalid page with accessibility errors")
   check_output.(output, "critical")
-  check_output.(output, "Images must have alternate text")
+  check_output.(output, "Images must have alternative text")
   check_output.(output, "There is 1 node with this violation:")
   check_output.(output, "dynamic invalid page with accessibility errors that only happen after interaction")
   check_output.(output, "serious")
