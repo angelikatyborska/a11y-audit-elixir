@@ -29,6 +29,9 @@ jobs:
           - elixir: '1.17.0'
             otp: '27.0'
             current_version: true
+          - elixir: '1.18.1'
+            otp: '27.2'
+            current_version: true
 
     steps:
       - name: Checkout code
