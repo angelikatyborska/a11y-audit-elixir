@@ -8,15 +8,12 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     continue-on-error: false
     strategy:
       fail-fast: false
       matrix:
         include:
-          - elixir: '1.13.2'
-            otp: '24.1'
-            current_version: false
           - elixir: '1.14.0'
             otp: '25.0'
             current_version: false
