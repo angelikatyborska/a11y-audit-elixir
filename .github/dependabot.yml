@@ -7,9 +7,13 @@ updates:
     day: sunday
     time: "16:00"
   open-pull-requests-limit: 10
+  cooldown:
+    default-days: 7
 - package-ecosystem: npm
   directory: "/assets"
   schedule:
     interval: daily
     time: "16:00"
   open-pull-requests-limit: 10
+  cooldown:
+    default-days: 7
