@@ -16,7 +16,7 @@ The library can be installed by adding `a11y_audit` to your list of dependencies
 ```elixir
 def deps do
   [
-    {:a11y_audit, "~> 0.3.2", only: :test}
+    {:a11y_audit, "~> 0.3.3", only: :test}
   ]
 end
 ```
