@@ -4,6 +4,10 @@
 
 Every time axe-core gets a major/minor/patch upgrade, this project also gets a major/minor/patch upgrade. But this project can also have upgrades unrelated to axe-core, which follow semantic versioning. As a result, this project's versions will not match axe-core versions exactly. Refer to [package-lock.json](./assets/package-lock.json) to learn the exact axe-core version currently used, or read the changelog.
 
+## 0.4.1 (2026-06-20)
+
+- Upgrade axe-core to 4.12.1.
+ 
 ## 0.4.0 (2026-06-14)
 
 - Upgrade axe-core to 4.12.0.
