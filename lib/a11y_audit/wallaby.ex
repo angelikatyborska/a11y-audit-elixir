@@ -2,8 +2,6 @@ if Code.ensure_loaded?(Wallaby) do
   defmodule A11yAudit.Wallaby do
     @moduledoc "ExUnit assertions for Wallaby tests"
 
-    require Logger
-
     alias A11yAudit.JS
     alias A11yAudit.Results
     alias A11yAudit.Assertions
