@@ -20,7 +20,7 @@ Enum.each(demo_project_paths, fn demo_project_path ->
 
   {output, 2} = System.cmd("mix", ["test", "test/demo_web/integration/pages_test.exs"], cd: demo_project_path)
 
-  check_output.(output, ~r/3 (features|tests), 2 failures/)
+  check_output.(output, ~r/(3 (features|tests), 2 failures)|(Result: 1\/3 passed)/)
   check_output.(output, "invalid page with accessibility errors")
   check_output.(output, "critical")
   check_output.(output, "Images must have alternative text")
