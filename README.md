@@ -63,9 +63,26 @@ defmodule MyAppWeb.HomeTest do
 end
 ```
 
+### For PhoenixTest.Playwright
+
+Call `A11yAudit.PhoenixTest.Playwright.assert_no_violations/1` in your [PhoenixTest.Playwright](https://github.com/ftes/phoenix_test_playwright) tests. Requires `phoenix_test_playwright` 0.12 or later (Elixir 1.18+).
+
+```elixir
+defmodule MyAppWeb.HomeTest do
+  use PhoenixTest.Playwright.Case, async: true
+
+  test "home page", %{conn: conn} do
+    conn
+    |> visit("/")
+    |> assert_has("h1", text: "My App")
+    |> A11yAudit.PhoenixTest.Playwright.assert_no_violations()
+  end
+end
+```
+
 ### For other environments
 
-If you're running browser-based tests in Elixir without using Wallaby or Hound, you can still use A11yAudit. You will need a way to execute JavaScript snippets, and to get their return values back into your Elixir code. Assuming you have an `execute_script` function that can do that, you can use the test assertions like so:
+If you're running browser-based tests in Elixir without using Wallaby, Hound, or PhoenixTest.Playwright, you can still use A11yAudit. You will need a way to execute JavaScript snippets, and to get their return values back into your Elixir code. Assuming you have an `execute_script` function that can do that, you can use the test assertions like so:
 
 ```elixir
 get_audit_result =
@@ -82,7 +99,7 @@ A11yAudit.Assertions.assert_no_violations(get_audit_result.())
 
 See the [documentation for `A11yAudit.Assertions.assert_no_violations/1`](https://hexdocs.pm/a11y_audit/A11yAudit.Assertions.html#assert_no_violations/2-options) for a full list of options.
 
-Configuration options can be passed to the assertion functions (`A11yAudit.Wallaby.assert_no_violations/1`, `A11yAudit.Hound.assert_no_violations/0`, `A11yAudit.Assertions.assert_no_violations/1`).
+Configuration options can be passed to the assertion functions (`A11yAudit.Wallaby.assert_no_violations/1`, `A11yAudit.Hound.assert_no_violations/0`, `A11yAudit.PhoenixTest.Playwright.assert_no_violations/1`, `A11yAudit.Assertions.assert_no_violations/1`).
 
 ## Supported browsers
 
