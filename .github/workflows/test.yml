@@ -29,12 +29,15 @@ jobs:
           - elixir: '1.18.1'
             otp: '27.2'
             current_version: true
+            playwright: true
           - elixir: '1.19.0'
             otp: '28.1'
             current_version: true
+            playwright: true
           - elixir: '1.20.1'
             otp: '29.0'
             current_version: true
+            playwright: true
 
     steps:
       - name: Checkout code
@@ -97,6 +100,16 @@ jobs:
 
       - name: Set up demo wallaby project
         run: cd demo/demo_wallaby && mix deps.get
+
+      - name: Set up Bun
+        if: ${{ matrix.playwright }}
+        uses: oven-sh/setup-bun@v2
+
+      - name: Set up demo playwright project
+        if: ${{ matrix.playwright }}
+        run: |
+          cd demo/demo_playwright && mix deps.get
+          cd assets && bun install --frozen-lockfile && bunx playwright install chromium --with-deps
 
       - name: Run smoke tests
         run: elixir ./bin/smoke_test.exs || elixir ./bin/smoke_test.exs

@@ -15,6 +15,14 @@ end
 
 demo_project_paths = ["./demo/demo_hound", "./demo/demo_wallaby"]
 
+# phoenix_test_playwright requires Elixir 1.18+
+demo_project_paths =
+  if Version.match?(System.version(), ">= 1.18.0") do
+    demo_project_paths ++ ["./demo/demo_playwright"]
+  else
+    demo_project_paths
+  end
+
 Enum.each(demo_project_paths, fn demo_project_path ->
   IO.puts("checking #{demo_project_path}")
 

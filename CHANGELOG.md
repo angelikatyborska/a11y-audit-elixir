@@ -4,6 +4,10 @@
 
 Every time axe-core gets a major/minor/patch upgrade, this project also gets a major/minor/patch upgrade. But this project can also have upgrades unrelated to axe-core, which follow semantic versioning. As a result, this project's versions will not match axe-core versions exactly. Refer to [package-lock.json](./assets/package-lock.json) to learn the exact axe-core version currently used, or read the changelog.
 
+## Unreleased
+
+- Add `A11yAudit.PhoenixTest.Playwright.assert_no_violations/2` for [PhoenixTest.Playwright](https://github.com/ftes/phoenix_test_playwright) tests.
+
 ## 0.5.0 (2026-08-18)
 
 - Upgrade axe-core to 4.13.0.

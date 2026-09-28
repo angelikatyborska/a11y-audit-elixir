@@ -40,7 +40,16 @@ defmodule A11yAudit.MixProject do
       {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
       {:ex_doc, "~> 0.31", only: :dev, runtime: false},
       {:credo, "~> 1.0", only: [:dev], runtime: false}
-    ]
+    ] ++ phoenix_test_playwright_deps()
+  end
+
+  # phoenix_test_playwright depends on playwright_ex, which requires Elixir 1.18+
+  defp phoenix_test_playwright_deps() do
+    if Version.match?(System.version(), ">= 1.18.0") do
+      [{:phoenix_test_playwright, "~> 0.12", optional: true}]
+    else
+      []
+    end
   end
 
   defp aliases() do
